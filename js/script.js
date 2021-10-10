@@ -40,7 +40,7 @@ function addNewNote(text = "") {
 		textArea.focus();
 	});
 	textArea.addEventListener("input", function (e) {
-		const { value } = e.target;
+		let { value } = e.target;
 		main.innerHTML = marked(value);
 		updateStorage();
 	});
