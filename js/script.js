@@ -1,6 +1,13 @@
 const addBtn = document.getElementById("add");
 const wrapper = document.querySelector(".wrapper");
 const notes = JSON.parse(localStorage.getItem("notes"));
+const listIndex = JSON.parse(localStorage.getItem("ready"));
+const rStor = [];
+if (listIndex) {
+	listIndex.forEach((el, i) => {
+		rStor.push(i);
+	});
+}
 if (notes)
 	notes.forEach((note) => {
 		addNewNote(note);
@@ -25,6 +32,7 @@ function addNewNote(text = "") {
 	const delBtn = note.querySelector(".delete");
 	const main = note.querySelector(".main");
 	const textArea = note.querySelector("textarea");
+
 	textArea.value = text;
 	textArea.focus();
 	main.innerHTML = marked(text);
@@ -44,17 +52,40 @@ function addNewNote(text = "") {
 		main.innerHTML = marked(value);
 		updateStorage();
 	});
-
 	wrapper.append(note);
 }
-
+function getReady() {
+	const list = document.querySelectorAll("li");
+	list.forEach((li, i) => {
+		li.addEventListener("click", function (e) {
+			if (li.classList.contains("ready")) {
+				li.classList.remove("ready");
+				if (rStor.length > 1) rStor.splice(rStor.indexOf(i), 1);
+				else rStor.pop();
+			} else {
+				li.classList.add("ready");
+				rStor.push(i);
+			}
+			localStorage.setItem("ready", JSON.stringify(rStor));
+			console.log(rStor);
+		});
+	});
+}
+getReady();
 function updateStorage() {
 	const notesText = document.querySelectorAll("textarea");
 	const notes = [];
 	notesText.forEach((note) => notes.push(note.value));
 	localStorage.setItem("notes", JSON.stringify(notes));
+	getReady();
 }
-
+// READY FROM STORAGE
+const listItems = document.querySelectorAll("ul li");
+listItems.forEach((li, i) => {
+	if (listIndex.includes(i)) {
+		li.classList.add("ready");
+	}
+});
 // DOWNLOAD
 const download = document.querySelector("#download");
 function getImage(canvas) {
