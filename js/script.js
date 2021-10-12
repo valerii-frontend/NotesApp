@@ -3,6 +3,7 @@ const wrapper = document.querySelector(".wrapper");
 const notes = JSON.parse(localStorage.getItem("notes"));
 const listIndex = JSON.parse(localStorage.getItem("ready"));
 const rStor = [];
+
 if (listIndex) {
 	listIndex.forEach((el, i) => {
 		rStor.push(i);
@@ -16,12 +17,14 @@ if (notes)
 
 addBtn.addEventListener("click", () => addNewNote());
 
+// NEW NOTE GENERATION
 function addNewNote(text = "") {
 	const note = document.createElement("div");
 	note.classList.add("note");
-
+	// note HTML
 	note.innerHTML = `
 	<div class="tools" style='background-color: var(--color${Math.trunc(Math.random() * 10)});'>
+		<i class="fa fa-arrows-alt move" ></i>
 	<button class="edit"><i class="fas fa-edit"></i></button>
 	<button class="delete"><i class="fas fa-trash-alt"></i></button>
 </div>
@@ -36,12 +39,11 @@ function addNewNote(text = "") {
 	textArea.value = text;
 	textArea.focus();
 	main.innerHTML = marked(text);
-
+	// buttons clickers
 	delBtn.addEventListener("click", () => {
 		note.remove();
 		updateStorage();
 	});
-
 	editBtn.addEventListener("click", function (e) {
 		textArea.classList.toggle("hidden");
 		main.classList.toggle("hidden");
@@ -52,8 +54,10 @@ function addNewNote(text = "") {
 		main.innerHTML = marked(value);
 		updateStorage();
 	});
+	// add note to page
 	wrapper.append(note);
 }
+// CLICK TOGGLE ready class FUNC
 function getReady() {
 	const list = document.querySelectorAll("li");
 	list.forEach((li, i) => {
@@ -67,20 +71,21 @@ function getReady() {
 				rStor.push(i);
 			}
 			localStorage.setItem("ready", JSON.stringify(rStor));
-			console.log(rStor);
 		});
 	});
 }
+
 getReady();
+
+// UPDATE LOCALSTORAGE
 function updateStorage() {
 	const notesText = document.querySelectorAll("textarea");
 	const notes = [];
 	notesText.forEach((note) => notes.push(note.value));
 	localStorage.setItem("notes", JSON.stringify(notes));
-	getReady();
 }
 // READY FROM STORAGE
-const listItems = document.querySelectorAll("ul li");
+const listItems = document.querySelectorAll("li");
 listItems.forEach((li, i) => {
 	if (listIndex.includes(i)) {
 		li.classList.add("ready");
